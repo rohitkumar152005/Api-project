@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pracice ID Card</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #e3f2fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+    background: #fd4141;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 14px 3px #0039ff;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    max-width: 800px;
+    width: 100%;
+}
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #userSelect {
+      padding: 12px;
+      width: 100%;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .card {
+      display: none;
+      flex: 1;
+      min-width: 280px;
+      padding: 20px;
+      background: #fefefe;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: 0.3s ease;
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin: 10px 0 5px;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-group">
+      <h2>Select User</h2>
+      <select id="userSelect">
+        <option value="">-- Select a user --</option>
+      </select>
+    </div>
+
+    <div id="idCard" class="card">
+      <img id="userImage" src="" alt="User Image" />
+      <h3 id="fullName"></h3>
+      <p><strong>Phone:</strong> <span id="phone"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+      <p><strong>Birth date:</strong> <span id="birthDate"></span></p>
+      <p> <strong> Gender:</strong> <span id="gender"></span></p>
+      <p> <strong> Age:</strong> <span id="age"></span></p>
+
+      <p><strong>Address:</strong> <span id="address"></span></p>
+    </div>
+  </div>
+
+  <script>
+const apiUrl="https://dummyjson.com/users";
+
+const select =document.getElementById("userSelect");
+const idCard=document.getElementById("idCard");
+const userImage=document.getElementById("userImage");
+const fullName =document.getElementById("fullName");
+const phone =document.getElementById("phone");
+const email= document.getElementById("email");
+const birthDate=document.getElementById("birthDate");
+const gender=document.getElementById("gender");
+const age=document.getElementById("age");
+const address = document.getElementById("address"); 
+
+let users =[];
+ fetch(apiUrl)
+ .then(response => response.json())
+ .then(data=>{
+    users = data.users;
+   populateDropdown(users)
+ }) 
+ .catch(error=>{
+    console.error("user ke input me kuch error hai" , error);
+    alert("User ke input me error hai data show nhi hoga");
+ });
+
+ function populateDropdown(users){
+    users.forEach( (user , index) =>{
+        const option= document.createElement("option");
+        option.value=index;
+        option.textContent=` ${user.firstName} ${user.lastName}`;
+         select.appendChild(option);
+    });
+ }
+  select.addEventListener("change", ()=>{
+        const selectedIndex =select.value;
+        if (selectedIndex === ""){
+            idCard.style.display="none";
+            return;
+        }
+
+        const user = users [selectedIndex];
+    userImage.src=user.image;
+    fullName.textContent=`${user.firstName}${user.lastName}`;
+    phone.textContent=`${user.phone}`;
+    email.textContent=`${user.email}`;
+    birthDate.textContent=`${user.birthDate}`;
+    gender.textContent=`${user.gender}`;
+    age.textContent=`${user.age}`;
+    address.textContent=`${user.address.address} ${user.address.city}${user.address.state} ${user.address.country}`;
+
+    idCard.style.display="block";
+
+    });
+  </script>
+</body>
+</html>
